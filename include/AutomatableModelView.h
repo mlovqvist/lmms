@@ -31,7 +31,7 @@
 class QMenu;
 class QMouseEvent;
 
-class EXPORT AutomatableModelView : public ModelView
+class LMMS_EXPORT AutomatableModelView : public ModelView
 {
 public:
 	AutomatableModelView( Model* model, QWidget* _this );
@@ -103,7 +103,7 @@ protected:
 
 
 #define generateTypedModelView(type)							\
-class EXPORT type##ModelView : public AutomatableModelView		\
+class LMMS_EXPORT type##ModelView : public AutomatableModelView		\
 {																\
 public:															\
 	type##ModelView( Model* model, QWidget* _this ) :			\

@@ -63,7 +63,7 @@
 
 class ControllerConnection;
 
-class EXPORT AutomatableModel : public Model, public JournallingObject
+class LMMS_EXPORT AutomatableModel : public Model, public JournallingObject
 {
 	Q_OBJECT
 	MM_OPERATORS
@@ -397,7 +397,7 @@ signals:
 
 // some typed AutomatableModel-definitions
 
-class EXPORT FloatModel : public AutomatableModel
+class LMMS_EXPORT FloatModel : public AutomatableModel
 {
 	Q_OBJECT
 public:
@@ -415,7 +415,7 @@ public:
 } ;
 
 
-class EXPORT IntModel : public AutomatableModel
+class LMMS_EXPORT IntModel : public AutomatableModel
 {
 	Q_OBJECT
 public:
@@ -432,7 +432,7 @@ public:
 } ;
 
 
-class EXPORT BoolModel : public AutomatableModel
+class LMMS_EXPORT BoolModel : public AutomatableModel
 {
 	Q_OBJECT
 public:

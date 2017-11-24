@@ -29,6 +29,10 @@ SET(REMOTE_VST_PLUGIN_FILEPATH "RemoteVstPlugin" CACHE STRING "Relative file pat
 ADD_DEFINITIONS(-DREMOTE_VST_PLUGIN_FILEPATH="${REMOTE_VST_PLUGIN_FILEPATH}")
 BUILD_PLUGIN(vstbase vst_base.cpp VstPlugin.cpp VstPlugin.h communication.h MOCFILES VstPlugin.h)
 
+IF(LMMS_BUILD_LINUX AND WANT_QT5)
+	TARGET_LINK_LIBRARIES(vstbase qx11embedcontainer)
+ENDIF()
+
 IF(LMMS_BUILD_LINUX AND NOT WANT_VST_NOWINE)
 
 IF(LMMS_HOST_X86_64)
@@ -43,6 +47,7 @@ SET(WINE_CXX_FLAGS "" CACHE STRING "Extra flags passed to wineg++")
 STRING(REPLACE "include/wine" "include" WINE_INCLUDE_BASE_DIR ${WINE_INCLUDE_DIR})
 STRING(REPLACE "lib/libwine.so" "lib" WINE_LIBRARY_DIR ${WINE_LIBRARY})
 STRING(REPLACE " " ";" WINE_BUILD_FLAGS ${CMAKE_CXX_FLAGS} " " ${CMAKE_EXE_LINKER_FLAGS} " " ${WINE_CXX_FLAGS})
+
 ADD_CUSTOM_COMMAND(
 	SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/RemoteVstPlugin.cpp"
 	COMMAND ${WINE_CXX}
@@ -51,8 +56,8 @@ ADD_CUSTOM_COMMAND(
 		-I${WINE_INCLUDE_BASE_DIR}
 		-L${WINE_LIBRARY_DIR}
 		${CMAKE_CURRENT_SOURCE_DIR}/RemoteVstPlugin.cpp
-		-ansi -mwindows -lpthread ${EXTRA_FLAGS} -fno-omit-frame-pointer
 		-std=c++0x
+		-mwindows -lpthread ${EXTRA_FLAGS} -fno-omit-frame-pointer
 		${WINE_BUILD_FLAGS}
 		-o ../RemoteVstPlugin
 	# Ensure correct file extension

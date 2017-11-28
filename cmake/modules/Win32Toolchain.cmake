@@ -6,5 +6,4 @@ ENDIF()
 
 SET(CMAKE_SYSTEM_PROCESSOR          i686)
 
-INCLUDE(MinGWCrossCompile)
-
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/MinGWCrossCompile.cmake")

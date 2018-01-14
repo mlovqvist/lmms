@@ -332,7 +332,7 @@ private:
 	} ;
 
 	// callback used by plugin for being able to communicate with it's host
-	static intptr_t hostCallback( AEffect * _effect, int32_t _opcode,
+	static VST_CALL_CONV intptr_t hostCallback( AEffect * _effect, int32_t _opcode,
 					int32_t _index, intptr_t _value,
 					void * _ptr, float _opt );
 
@@ -841,7 +841,7 @@ bool RemoteVstPlugin::load( const std::string & _plugin_file )
 		return false;
 	}
 
-	typedef AEffect * ( __cdecl * mainEntryPointer )
+	typedef AEffect * ( VST_CALL_CONV * mainEntryPointer )
 						( audioMasterCallback );
 	mainEntryPointer mainEntry = (mainEntryPointer)
 				GetProcAddress( m_libInst, "VSTPluginMain" );

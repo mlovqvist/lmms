@@ -128,6 +128,7 @@ ControllerConnectionDialog::ControllerConnectionDialog( QWidget * _parent,
 	QDialog( _parent ),
 	m_readablePorts( NULL ),
 	m_midiAutoDetect( false ),
+	m_midi14bitCC( false ),
 	m_controller( NULL ),
 	m_targetModel( _target_model ),
 	m_midiController( NULL )
@@ -138,7 +139,7 @@ ControllerConnectionDialog::ControllerConnectionDialog( QWidget * _parent,
 
 	// Midi stuff
 	m_midiGroupBox = new GroupBox( tr( "MIDI CONTROLLER" ), this );
-	m_midiGroupBox->setGeometry( 8, 10, 240, 80 );
+	m_midiGroupBox->setGeometry( 8, 10, 240, 100 );
 	connect( m_midiGroupBox->model(), SIGNAL( dataChanged() ),
 			this, SLOT( midiToggled() ) );
 	
@@ -163,6 +164,14 @@ ControllerConnectionDialog::ControllerConnectionDialog( QWidget * _parent,
 	connect( &m_midiAutoDetect, SIGNAL( dataChanged() ),
 			this, SLOT( autoDetectToggled() ) );
 
+	m_midi14bitCCCheckBox =
+			new LedCheckBox( tr("14-bit CC messages"),
+				m_midiGroupBox, tr("14-bit CC messages") );
+	m_midi14bitCCCheckBox->setModel( &m_midi14bitCC );
+	m_midi14bitCCCheckBox->move( 8, 80 );
+	connect( &m_midi14bitCC, SIGNAL( dataChanged() ),
+			this, SLOT( midiCCToggled() ) );
+
 	// when using with non-raw-clients we can provide buttons showing
 	// our port-menus when being clicked
 	if( !Engine::mixer()->midiClient()->isRaw() )
@@ -182,7 +191,7 @@ ControllerConnectionDialog::ControllerConnectionDialog( QWidget * _parent,
 
 	// User stuff
 	m_userGroupBox = new GroupBox( tr( "USER CONTROLLER" ), this );
-	m_userGroupBox->setGeometry( 8, 100, 240, 60 );
+	m_userGroupBox->setGeometry( 8, 120, 240, 60 );
 	connect( m_userGroupBox->model(), SIGNAL( dataChanged() ),
 			this, SLOT( userToggled() ) );
 
@@ -198,7 +207,7 @@ ControllerConnectionDialog::ControllerConnectionDialog( QWidget * _parent,
 
 	// Mapping functions
 	m_mappingBox = new TabWidget( tr( "MAPPING FUNCTION" ), this );
-	m_mappingBox->setGeometry( 8, 170, 240, 64 );
+	m_mappingBox->setGeometry( 8, 190, 240, 64 );
 	m_mappingFunction = new QLineEdit( m_mappingBox );
 	m_mappingFunction->setGeometry( 10, 20, 170, 16 );
 	m_mappingFunction->setText( "input" );
@@ -253,6 +262,7 @@ ControllerConnectionDialog::ControllerConnectionDialog( QWidget * _parent,
 				MidiController * cont = (MidiController*)( cc->getController() );
 				m_midiChannelSpinBox->model()->setValue( cont->m_midiPort.inputChannel() );
 				m_midiControllerSpinBox->model()->setValue( cont->m_midiPort.inputController() );
+				m_midi14bitCCCheckBox->model()->setValue( cont->m_midiPort.midi14BitCC() );
 
 				m_midiController->subscribeReadablePorts( static_cast<MidiController*>( cc->getController() )->m_midiPort.readablePorts() );
 			}
@@ -364,6 +374,7 @@ void ControllerConnectionDialog::midiToggled()
 
 			m_midiChannelSpinBox->setModel( &m_midiController->m_midiPort.m_inputChannelModel );
 			m_midiControllerSpinBox->setModel( &m_midiController->m_midiPort.m_inputControllerModel );
+			m_midi14bitCCCheckBox->setModel( &m_midiController->m_midiPort.m_midi14BitCCModel );
 
 			if( m_readablePorts )
 			{
@@ -405,6 +416,10 @@ void ControllerConnectionDialog::autoDetectToggled()
 	}
 }
 
+void ControllerConnectionDialog::midiCCToggled()
+{
+	printf("ControllerConnectionDialog::midiCCToggled → %i\n", m_midi14bitCC.value() );
+}
 
 
 
@@ -430,6 +445,14 @@ void ControllerConnectionDialog::enableAutoDetect( QAction * _a )
 	}
 }
 
+
+void ControllerConnectionDialog::enableMidiCC( QAction * _a )
+{
+	if( _a->isChecked() )
+	{
+		m_midi14bitCCCheckBox->model()->setValue( true );
+	}
+}
 
 
 

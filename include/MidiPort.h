@@ -56,6 +56,7 @@ class MidiPort : public Model, public SerializingObject
 	mapPropertyFromModel(int,baseVelocity,setBaseVelocity,m_baseVelocityModel);
 	mapPropertyFromModel(bool,isReadable,setReadable,m_readableModel);
 	mapPropertyFromModel(bool,isWritable,setWritable,m_writableModel);
+	mapPropertyFromModel(bool,midi14BitCC,setMidi14BitCC,m_midi14BitCCModel);
 public:
 	typedef QMap<QString, bool> Map;
 
@@ -155,6 +156,7 @@ private:
 	IntModel m_baseVelocityModel;
 	BoolModel m_readableModel;
 	BoolModel m_writableModel;
+	BoolModel m_midi14BitCCModel;
 
 	Map m_readablePorts;
 	Map m_writablePorts;

@@ -68,6 +68,8 @@ public slots:
 	void userToggled();
 	void autoDetectToggled();
 	void enableAutoDetect( QAction * _a );
+	void midiCCToggled();
+	void enableMidiCC( QAction * _a );
 
 
 protected slots:
@@ -79,9 +81,11 @@ private:
 	GroupBox * m_midiGroupBox;
 	LcdSpinBox * m_midiChannelSpinBox;
 	LcdSpinBox * m_midiControllerSpinBox;
-	LedCheckBox * m_midiAutoDetectCheckBox;
+	LedCheckBox * m_midiAutoDetectCheckBox;	
 	MidiPortMenu * m_readablePorts;
+	LedCheckBox *m_midi14bitCCCheckBox;
 	BoolModel m_midiAutoDetect;
+	BoolModel m_midi14bitCC;
 
 	// User
 	GroupBox * m_userGroupBox;

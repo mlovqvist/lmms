@@ -76,6 +76,8 @@ protected:
 	float m_lastValue;
 	float m_previousValue;
 
+	int m_pending_msb;
+
 	friend class ControllerConnectionDialog;
 	friend class AutoDetectMidiController;
 

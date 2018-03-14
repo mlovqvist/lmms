@@ -70,33 +70,67 @@ void MidiController::updateValueBuffer()
 }
 
 
+
 void MidiController::updateName()
 {
-	setName( QString("MIDI ch%1 ctrl%2").
-			arg( m_midiPort.inputChannel() ).
-			arg( m_midiPort.inputController() ) );
+
+	if (m_midiPort.midi14BitCC()) {
+		setName( QString("MIDI ch%1 ctrl%2 (14 bit)").
+				arg( m_midiPort.inputChannel() ).
+				arg( m_midiPort.inputController() ) );
+
+	} else {
+		setName( QString("MIDI ch%1 ctrl%2").
+				arg( m_midiPort.inputChannel() ).
+				arg( m_midiPort.inputController() ) );
+
+	}
+
 }
+
 
 
 
 
 void MidiController::processInEvent( const MidiEvent& event, const MidiTime& time, f_cnt_t offset )
 {
-	unsigned char controllerNum;
 	switch( event.type() )
 	{
 		case MidiControlChange:
-			controllerNum = event.controllerNumber();
 
-			if( m_midiPort.inputController() == controllerNum + 1 &&
-					( m_midiPort.inputChannel() == event.channel() + 1 ||
-					  m_midiPort.inputChannel() == 0 ) )
-			{
-				unsigned char val = event.controllerValue();
-				m_previousValue = m_lastValue;
-				m_lastValue = (float)( val ) / 127.0f;
-				emit valueChanged();
+
+			if (m_midiPort.midi14BitCC()) {
+
+				int controllerNum = event.controllerNumber();
+				if( m_midiPort.inputController() == controllerNum + 1 &&
+						( m_midiPort.inputChannel() == event.channel() + 1 ||
+						  m_midiPort.inputChannel() == 0 ) )
+				{
+					m_pending_msb = event.controllerValue();
+				} else if( m_midiPort.inputController() == controllerNum + 2 &&
+						( m_midiPort.inputChannel() == event.channel() + 1 ||
+						  m_midiPort.inputChannel() == 0 ) )
+				{
+					int lsb = event.controllerValue();
+					m_lastValue = (float)( m_pending_msb << 7 | lsb ) / (float)((1<<14)-1);
+					emit valueChanged();
+				}
+
+
+			} else {
+
+				int controllerNum = event.controllerNumber();
+				if( m_midiPort.inputController() == controllerNum + 1 &&
+						( m_midiPort.inputChannel() == event.channel() + 1 ||
+						  m_midiPort.inputChannel() == 0 ) )
+				{
+					unsigned char val = event.controllerValue();
+					m_lastValue = (float)( val ) / (float)((1<<7)-1);
+					emit valueChanged();
+				}
+
 			}
+
 			break;
 
 		default:
@@ -104,6 +138,7 @@ void MidiController::processInEvent( const MidiEvent& event, const MidiTime& tim
 			break;
 	}
 }
+
 
 
 

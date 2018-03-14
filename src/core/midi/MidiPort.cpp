@@ -53,7 +53,8 @@ MidiPort::MidiPort( const QString& name,
 	m_outputProgramModel( 1, 1, MidiProgramCount, this, tr( "Output MIDI program" ) ),
 	m_baseVelocityModel( MidiMaxVelocity/2, 1, MidiMaxVelocity, this, tr( "Base velocity" ) ),
 	m_readableModel( false, this, tr( "Receive MIDI-events" ) ),
-	m_writableModel( false, this, tr( "Send MIDI-events" ) )
+	m_writableModel( false, this, tr( "Send MIDI-events" ) ),
+	m_midi14BitCCModel( false, this, tr( "Use 14 bit midd CC messages" ) )
 {
 	m_midiClient->addPort( this );
 
@@ -176,6 +177,7 @@ void MidiPort::saveSettings( QDomDocument& doc, QDomElement& thisElement )
 	m_baseVelocityModel.saveSettings( doc, thisElement, "basevelocity" );
 	m_readableModel.saveSettings( doc, thisElement, "readable" );
 	m_writableModel.saveSettings( doc, thisElement, "writable" );
+	m_midi14BitCCModel.saveSettings( doc, thisElement, "use14bitcc" );
 
 	if( isInputEnabled() )
 	{
@@ -229,6 +231,7 @@ void MidiPort::loadSettings( const QDomElement& thisElement )
 	m_baseVelocityModel.loadSettings( thisElement, "basevelocity" );
 	m_readableModel.loadSettings( thisElement, "readable" );
 	m_writableModel.loadSettings( thisElement, "writable" );
+	m_midi14BitCCModel.loadSettings( thisElement, "use14bitcc" );
 
 	// restore connections
 
